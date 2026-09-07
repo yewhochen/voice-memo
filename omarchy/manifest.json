@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "yewho.voice-note",
+  "name": "Voice Note",
+  "version": "1.0.0",
+  "author": "yewho",
+  "description": "Native Omarchy Shell microphone recorder with an anchored popup",
+  "kinds": ["bar-widget"],
+  "entryPoints": {"barWidget": "BarWidget.qml"},
+  "barWidget": {
+    "displayName": "Voice Note",
+    "description": "Record microphone notes to WAV, FLAC, or MP3",
+    "category": "Audio",
+    "allowMultiple": false,
+    "defaultSection": "right"
+  }
+}

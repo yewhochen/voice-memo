@@ -1,0 +1,126 @@
+const test = require('node:test');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const vm = require('node:vm');
+const path = require('node:path');
+const source = fs.readFileSync(path.join(__dirname, '..', 'Model.js'), 'utf8');
+const sandbox = {}; vm.createContext(sandbox); vm.runInContext(source, sandbox);
+
+test('meter runs whenever panel is open, not just while recording', () => {
+  const panel = fs.readFileSync(path.join(__dirname, '..', 'Panel.qml'), 'utf8');
+  assert.match(panel, /enabled: root.opened && !!root.selectedNode/);
+  assert.match(panel, /running: root.opened/);
+});
+
+test('clipping uses raw full-scale peak and holds for 800ms', () => {
+  assert.equal(sandbox.clipUntil(0.99, 1000, 0), 0);
+  assert.equal(sandbox.clipUntil(1, 1000, 0), 1800);
+  assert.equal(sandbox.clipUntil(1.2, 1200, 1800), 2000);
+  assert.equal(sandbox.clipUntil(0, 1500, 1800), 1800);
+  assert.equal(sandbox.clipUntil(0, 1900, 1800), 1800);
+});
+
+test('elapsed recording time formats seconds, minutes and hours', () => {
+  assert.equal(sandbox.elapsedLabel(0), '00:00');
+  assert.equal(sandbox.elapsedLabel(12999), '00:12');
+  assert.equal(sandbox.elapsedLabel(61000), '01:01');
+  assert.equal(sandbox.elapsedLabel(3601000), '01:00:01');
+});
+
+test('audio service friendly names retain stable source IDs', () => {
+  const rows = sandbox.parseSources(JSON.stringify([
+    {name:'alsa_input.internal',description:'Built-in Audio',properties:{'node.nick':'ALC289 Analog'}},
+    {name:'alsa_input.usb',description:'DJI MIC MINI'},
+    {name:'sink.monitor',description:'Monitor'}
+  ]));
+  assert.equal(rows.length, 2);
+  assert.equal(rows[0].label, 'ALC289 Analog');
+  assert.equal(rows[1].label, 'DJI MIC MINI');
+  assert.equal(rows[1].value, 'alsa_input.usb');
+});
+
+test('format is restricted and extensions match', () => {
+  assert.equal(sandbox.normalizeFormat('mp3'), 'mp3');
+  assert.equal(sandbox.normalizeFormat('bogus'), 'wav');
+  assert.equal(sandbox.extensionFor('FLAC'), 'flac');
+});
+test('ffmpeg command explicitly selects source and codec', () => {
+  assert.deepEqual(Array.from(sandbox.recordCommand('alsa_input.test', 'flac', '/tmp/a.flac')), [
+    'ffmpeg','-hide_banner','-loglevel','info','-f','pulse','-i','alsa_input.test',
+    '-c:a','flac','-n','/tmp/a.flac'
+  ]);
+  assert.equal(sandbox.recordCommand('', 'mp3', '/tmp/a.mp3')[7], 'default');
+});
+test('source rows parse microphones and exclude monitor sources', () => {
+  const rows = sandbox.parseSources(JSON.stringify([{name:'mic.one'}, {name:'speaker.monitor'}]));
+  assert.equal(rows.length, 1); assert.equal(rows[0].value, 'mic.one'); assert.match(rows[0].label, /mic.one/);
+});
+test('invalid source JSON fails closed', () => {
+  for (const input of ['bad', '{}', 'null', '[null]', '12\tmic.one'])
+    assert.equal(sandbox.parseSources(input).length, 0);
+});
+
+test('record command uses safe no-overwrite and clean stdin stop', () => {
+  const command = sandbox.recordCommand('', 'wav', '/tmp/a.wav');
+  assert.equal(command.includes('-nostdin'), false);
+  assert.equal(command.includes('-n'), true);
+  assert.equal(command.includes('-y'), false);
+});
+test('qml declares native anchored panel and required states', () => {
+  const bar = fs.readFileSync(path.join(__dirname, '..', 'BarWidget.qml'), 'utf8');
+  const panel = fs.readFileSync(path.join(__dirname, '..', 'Panel.qml'), 'utf8');
+  assert.match(bar, /BarWidget\s*\{/); assert.match(panel, /KeyboardPanel\s*\{/);
+  assert.match(panel, /PwNodePeakMonitor/); assert.match(panel, /visible: root\.hasSaved/);
+  assert.match(panel, /Something Else\?/); assert.match(panel, /enabled: false/);
+  assert.match(bar, /function toggleRecording/); assert.match(panel, /persistSettings/);
+});
+
+test('Something Else is only visible after a successful recording, never while busy', () => {
+  assert.equal(sandbox.showOther('', false), false);
+  assert.equal(sandbox.showOther('/saved.wav', false), true);
+  assert.equal(sandbox.showOther('/saved.wav', true), false);
+});
+test('Setting is an outlined option below recording and no header gear remains', () => {
+  const panel = fs.readFileSync(path.join(__dirname, '..', 'Panel.qml'), 'utf8');
+  assert.ok(panel.indexOf('text: "Setting"') > panel.indexOf('text: root.recordButtonText'));
+  assert.equal(panel.includes('text: "⚙"'), false);
+  assert.match(panel, /component OutlinedButton/);
+  assert.match(panel, /border.width: 1/);
+  assert.match(panel, /Model.showOther/);
+});
+
+test('history copies files to clipboard on click and has no drag', () => {
+  const panel = fs.readFileSync(path.join(__dirname, '..', 'Panel.qml'), 'utf8');
+  const row = fs.readFileSync(path.join(__dirname, '..', 'HistoryRow.qml'), 'utf8');
+  assert.equal(panel.includes('text: "Saved: " + root.savedPath'), false);
+  assert.match(panel, /text: "History"/);
+  assert.match(panel, /x-special\/gnome-copied-files/);
+  assert.match(row, /onClicked: root.copyRequested/);
+  assert.match(row, /HoverHandler/);
+  assert.match(row, /text: "Play"/);
+  assert.match(row, /text: root.copied \? "Copied" : "Copy"/);
+  assert.match(row, /confirmDelete/);
+  assert.match(panel, /\["gio", "trash", uri\]/);
+  assert.match(panel, /\["xdg-open", uri\]/);
+  assert.equal(row.includes('Drag.'), false);
+  assert.equal(panel.includes('externalDragActive'), false);
+  assert.match(panel, /required property var modelData/);
+});
+
+test('folder button sits in title row above the recording control', () => {
+  const panel = fs.readFileSync(path.join(__dirname, '..', 'Panel.qml'), 'utf8');
+  assert.ok(panel.indexOf('Accessible.name: "Open Voice Notes folder"') < panel.indexOf('text: root.recordButtonText'));
+  assert.equal(panel.includes('layoutDirection: Qt.RightToLeft'), false);
+});
+
+test('history and settings are exclusive and folder action is exposed', () => {
+  const panel = fs.readFileSync(path.join(__dirname, '..', 'Panel.qml'), 'utf8');
+  const bar = fs.readFileSync(path.join(__dirname, '..', 'BarWidget.qml'), 'utf8');
+  assert.match(panel, /function showHistory/);
+  assert.match(panel, /settingsOpen = false/);
+  assert.match(panel, /function openFolder/);
+  assert.match(panel, /xdg-open/);
+  assert.match(bar, /function showHistory\(\): void/);
+  assert.match(bar, /function openFolder\(\): void/);
+  assert.match(panel, /Style\.space\(500\)/);
+});
