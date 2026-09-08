@@ -2,6 +2,22 @@
 
 Local-first voice notes for Linux. No account, cloud upload or AI service is required.
 
+## Install as an Omarchy plugin
+
+On Omarchy Quattro / Shell 4.0.2 (not older Waybar-only releases):
+
+```bash
+omarchy plugin add https://github.com/yewhochen/voice-memo.git --enable
+```
+
+The repository-root `manifest.json` loads `omarchy/BarWidget.qml` as a single
+`bar-widget`, with permanent ID `yewho.voice-note`. Its details panel is internal,
+not a separate plugin kind. The KDE application is **not** launched by this plugin.
+No second Quickshell process is started. See [setup, dependencies, validation and
+removal](omarchy/README.md) before enabling. Existing manual installations with
+this ID must be backed up and removed through Omarchy before using `plugin add`;
+adding over the same ID is refused.
+
 ## Two native front ends
 
 - [`kde/`](kde/README.md): Python/PyQt6 desktop window and system tray. PulseAudio/PipeWire capture via `parec`, WAV/FLAC/MP3 export via ffmpeg.
