@@ -3,7 +3,7 @@
 Native bar-anchored plugin for **Omarchy Shell 4.0.2**, ID `yewho.voice-note`.
 
 - Click the microphone icon to open/close; opening previews the microphone without saving audio.
-- Start begins recording; the elapsed-time button stops and saves. WAV, FLAC and MP3 supported.
+- Start begins recording; the elapsed-time button stops and saves. WAV and MP3 supported. Legacy FLAC format settings fall back to WAV; existing FLAC recordings remain available in history for playback, copying and trash deletion.
 - Setting opens microphone/format options. Device labels come from PipeWire `node.nick` with description/ID fallback.
 - Peak reaching full scale shows muted red `#C98282`, held for 800ms. This indicates digital full-scale risk, not all possible upstream analog distortion.
 - History lists five recent valid recordings; hover reveals Play / Copy / Delete. Delete requires confirmation and uses Trash, never permanent removal.

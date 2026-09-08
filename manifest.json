@@ -5,12 +5,12 @@
   "version": "1.0.0",
   "author": "yewho",
   "license": "MIT",
-  "description": "Local voice notes with microphone metering, WAV/FLAC/MP3 recording and recent-file history.",
+  "description": "Local voice notes with microphone metering, WAV/MP3 recording and recent-file history.",
   "kinds": ["bar-widget"],
   "entryPoints": { "barWidget": "omarchy/BarWidget.qml" },
   "barWidget": {
     "displayName": "Voice Memo",
-    "description": "Record microphone notes to WAV, FLAC, or MP3",
+    "description": "Record microphone notes to WAV or MP3",
     "category": "Audio",
     "allowMultiple": false,
     "defaultSection": "right"

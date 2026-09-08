@@ -67,6 +67,18 @@ class HistoryHelperTests(unittest.TestCase):
             with patch.object(pathlib.Path, "iterdir", side_effect=PermissionError("gone")):
                 self.assertEqual(recent(pathlib.Path(td), ""), [])
 
+    def test_legacy_flac_remains_in_history(self):
+        with tempfile.TemporaryDirectory() as td:
+            folder = pathlib.Path(td)
+            audio = folder / "legacy.flac"
+            subprocess.run([
+                "ffmpeg", "-v", "error", "-f", "lavfi", "-i",
+                "anullsrc=r=16000:cl=mono", "-t", "0.1", "-c:a", "flac", str(audio)
+            ], check=True)
+            rows = self.run_helper(folder)
+            self.assertEqual([row["name"] for row in rows], ["legacy.flac"])
+            self.assertEqual(rows[0]["uri"], audio.as_uri())
+
     def test_missing_folder_is_safe_json(self):
         with tempfile.TemporaryDirectory() as td:
             rows = self.run_helper(pathlib.Path(td) / "missing", ffprobe="/bin/true")

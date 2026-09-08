@@ -21,7 +21,7 @@ adding over the same ID is refused.
 ## Two native front ends
 
 - [`kde/`](kde/README.md): Python/PyQt6 desktop window and system tray. PulseAudio/PipeWire capture via `parec`, WAV/FLAC/MP3 export via ffmpeg.
-- [`omarchy/`](omarchy/README.md): native Omarchy Shell 4.0.2 / Quickshell bar-anchored panel. Uses PipeWire peak monitoring and ffmpeg capture.
+- [`omarchy/`](omarchy/README.md): native Omarchy Shell 4.0.2 / Quickshell bar-anchored panel. Uses PipeWire peak monitoring and ffmpeg capture with WAV/MP3 output. Legacy FLAC settings fall back to WAV; existing FLAC recordings remain supported in history.
 
 Both provide visible-only live microphone metering, Start/elapsed stop button, automatic saving, microphone/format settings, recent-five history, default-player playback, file clipboard, confirmed trash deletion, and session reset on hiding. Saved recordings and settings are preserved.
 

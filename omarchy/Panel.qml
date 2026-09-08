@@ -485,8 +485,8 @@ Panel {
           width: parent.width
           foreground: root.bar.foreground
           enabled: !root.busy
-          model: [{value:"wav",label:"WAV"},{value:"flac",label:"FLAC"},{value:"mp3",label:"MP3"}]
-          currentIndex: root.selectedFormat === "flac" ? 1 : (root.selectedFormat === "mp3" ? 2 : 0)
+          model: [{value:"wav",label:"WAV"},{value:"mp3",label:"MP3"}]
+          currentIndex: root.selectedFormat === "mp3" ? 1 : 0
           onActivated: root.persistSettings({format: model[index].value})
         }
         }

@@ -10,7 +10,7 @@
   "entryPoints": {"barWidget": "BarWidget.qml"},
   "barWidget": {
     "displayName": "Voice Note",
-    "description": "Record microphone notes to WAV, FLAC, or MP3",
+    "description": "Record microphone notes to WAV or MP3",
     "category": "Audio",
     "allowMultiple": false,
     "defaultSection": "right"

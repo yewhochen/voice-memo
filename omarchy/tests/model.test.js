@@ -66,12 +66,17 @@ test('audio service friendly names retain stable source IDs', () => {
 test('format is restricted and extensions match', () => {
   assert.equal(sandbox.normalizeFormat('mp3'), 'mp3');
   assert.equal(sandbox.normalizeFormat('bogus'), 'wav');
-  assert.equal(sandbox.extensionFor('FLAC'), 'flac');
+  assert.equal(sandbox.extensionFor('FLAC'), 'wav');
+  assert.equal(sandbox.normalizeFormat('flac'), 'wav');
+  assert.equal(sandbox.codecFor('flac'), 'pcm_s16le');
+  const panel = fs.readFileSync(path.join(__dirname, '..', 'Panel.qml'), 'utf8');
+  assert.ok(panel.includes('model: [{value:"wav",label:"WAV"},{value:"mp3",label:"MP3"}]'));
+  assert.ok(panel.includes('currentIndex: root.selectedFormat === "mp3" ? 1 : 0'));
 });
 test('ffmpeg command explicitly selects source and codec', () => {
-  assert.deepEqual(Array.from(sandbox.recordCommand('alsa_input.test', 'flac', '/tmp/a.flac')), [
+  assert.deepEqual(Array.from(sandbox.recordCommand('alsa_input.test', 'mp3', '/tmp/a.mp3')), [
     'ffmpeg','-hide_banner','-loglevel','info','-f','pulse','-i','alsa_input.test',
-    '-c:a','flac','-n','/tmp/a.flac'
+    '-c:a','libmp3lame','-n','/tmp/a.mp3'
   ]);
   assert.equal(sandbox.recordCommand('', 'mp3', '/tmp/a.mp3')[7], 'default');
 });

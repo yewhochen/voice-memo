@@ -11,14 +11,13 @@ function elapsedLabel(ms) {
 
 function normalizeFormat(value) {
   var format = String(value || "").toLowerCase()
-  return ["wav", "flac", "mp3"].indexOf(format) >= 0 ? format : "wav"
+  return ["wav", "mp3"].indexOf(format) >= 0 ? format : "wav"
 }
 
 function extensionFor(format) { return normalizeFormat(format) }
 
 function codecFor(format) {
   var normalized = normalizeFormat(format)
-  if (normalized === "flac") return "flac"
   if (normalized === "mp3") return "libmp3lame"
   return "pcm_s16le"
 }
