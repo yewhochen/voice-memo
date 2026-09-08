@@ -24,6 +24,21 @@ test('recording hint describes the button instead of an uninstalled shortcut', (
   assert.equal(panel.includes('Press SUPER + SHIFT + R to stop'), false);
 });
 
+test('folder and history actions have no hover tooltips and use accessible icons', () => {
+  const panel = fs.readFileSync(path.join(__dirname, '..', 'Panel.qml'), 'utf8');
+  const history = fs.readFileSync(path.join(__dirname, '..', 'HistoryRow.qml'), 'utf8');
+  const folder = panel.slice(panel.indexOf('id: folderButton'), panel.indexOf('onClicked: root.openFolder()'));
+  assert.equal(folder.includes('ToolTip'), false);
+  assert.equal(history.includes('ToolTip'), false);
+  for (const label of ['Play', 'Copy', 'Delete']) {
+    assert.ok(history.includes('Accessible.name:'));
+    assert.equal(history.includes('text: "' + label + '"'), false);
+  }
+  assert.ok(history.includes('root.copied ? "󰄬" : "󰆏"'));
+  assert.ok(history.includes('root.confirmDelete ? "󰄬" : "󰆴"'));
+  assert.ok(history.includes('if (!root.confirmDelete) root.confirmDelete = true'));
+});
+
 test('settings names the device selector Input', () => {
   const panel = fs.readFileSync(path.join(__dirname, '..', 'Panel.qml'), 'utf8');
   assert.ok(panel.includes('text: "Input"'));
@@ -125,8 +140,8 @@ test('history copies files to clipboard on click and has no drag', () => {
   assert.match(panel, /x-special\/gnome-copied-files/);
   assert.match(row, /onClicked: root.copyRequested/);
   assert.match(row, /HoverHandler/);
-  assert.match(row, /text: "Play"/);
-  assert.match(row, /text: root.copied \? "Copied" : "Copy"/);
+  assert.match(row, /Accessible.name: "Play"/);
+  assert.match(row, /Accessible.name: root.copied \? "Copied" : "Copy"/);
   assert.match(row, /confirmDelete/);
   assert.match(panel, /\["gio", "trash", uri\]/);
   assert.match(panel, /\["xdg-open", uri\]/);

@@ -54,7 +54,7 @@ Item {
       text: button.text
       color: root.foreground
       font.family: root.fontFamily
-      font.pixelSize: Style.font.caption
+      font.pixelSize: Style.font.body
       horizontalAlignment: Text.AlignHCenter
       verticalAlignment: Text.AlignVCenter
     }
@@ -74,12 +74,11 @@ Item {
     Behavior on opacity { NumberAnimation { duration: 120 } }
     anchors { left: parent.left; right: parent.right; bottom: parent.bottom; margins: Style.space(5) }
     spacing: Style.space(5)
-    Action { text: "Play"; onClicked: root.playRequested(root.fileUri) }
-    Action { text: root.copied ? "Copied" : "Copy"; onClicked: root.copyRequested(root.fileUri) }
+    Action { text: "󰐊"; Accessible.name: "Play"; onClicked: root.playRequested(root.fileUri) }
+    Action { text: root.copied ? "󰄬" : "󰆏"; Accessible.name: root.copied ? "Copied" : "Copy"; onClicked: root.copyRequested(root.fileUri) }
     Action {
-      text: root.confirmDelete ? "Confirm?" : "Delete"
-      Controls.ToolTip.visible: hovered
-      Controls.ToolTip.text: "Move to Trash; click twice to confirm"
+      text: root.confirmDelete ? "󰄬" : "󰆴"
+      Accessible.name: root.confirmDelete ? "Confirm move to Trash" : "Delete"
       onClicked: {
         if (!root.confirmDelete) root.confirmDelete = true
         else { root.confirmDelete = false; root.deleteRequested(root.fileUri) }

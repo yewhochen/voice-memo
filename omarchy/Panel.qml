@@ -368,8 +368,6 @@ Panel {
             width: Style.space(36)
             text: "󰉋"
             Accessible.name: "Open Voice Notes folder"
-            Controls.ToolTip.visible: hovered
-            Controls.ToolTip.text: "Open recording folder"
             onClicked: root.openFolder()
           }
         }
