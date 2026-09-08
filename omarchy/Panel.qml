@@ -360,7 +360,7 @@ Panel {
             width: parent.width - headerMic.implicitWidth - folderButton.width - parent.spacing * 2
             anchors.verticalCenter: parent.verticalCenter
             Text { textFormat: Text.PlainText; text: root.recording ? "Recording" : "Voice Note"; color: root.bar.foreground; font.family: root.bar.fontFamily; font.pixelSize: Style.font.title; font.bold: true }
-            Text { textFormat: Text.PlainText; text: root.recording ? "Press SUPER + SHIFT + R to stop" : "Ready to record"; color: Qt.darker(root.bar.foreground, 1.4); font.family: root.bar.fontFamily; font.pixelSize: Style.font.caption }
+            Text { textFormat: Text.PlainText; text: root.recording ? "Click the timer to stop and save" : "Ready to record"; color: Qt.darker(root.bar.foreground, 1.4); font.family: root.bar.fontFamily; font.pixelSize: Style.font.caption }
           }
           OutlinedButton {
             id: folderButton

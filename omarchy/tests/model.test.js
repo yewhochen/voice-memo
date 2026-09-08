@@ -18,6 +18,12 @@ test('idle icon uses the preferred microphone glyph', () => {
   assert.ok(bar.includes('text: root.recording ? "󰑋" : "󰍬"'));
 });
 
+test('recording hint describes the button instead of an uninstalled shortcut', () => {
+  const panel = fs.readFileSync(path.join(__dirname, '..', 'Panel.qml'), 'utf8');
+  assert.ok(panel.includes('root.recording ? "Click the timer to stop and save" : "Ready to record"'));
+  assert.equal(panel.includes('Press SUPER + SHIFT + R to stop'), false);
+});
+
 test('settings names the device selector Input', () => {
   const panel = fs.readFileSync(path.join(__dirname, '..', 'Panel.qml'), 'utf8');
   assert.ok(panel.includes('text: "Input"'));
