@@ -67,9 +67,11 @@ and run the new-install command above. Restore the desired plugin settings and
 placement selectively; do not overwrite unrelated bar entries. Saved audio is
 outside the plugin directory and is not part of the package.
 
-The `omarchy/` subfolder retains its standalone manifest for manual installs.
-When copying just that folder, also copy the repository's `LICENSE`. Run
-`omarchy-shell shell rescanPlugins` before `omarchy plugin enable yewho.voice-note`.
+For manual installation, copy the complete repository (including the root
+`manifest.json`, `LICENSE`, and `omarchy/` directory), not just `omarchy/`.
+Only the root manifest is shipped, as required by the marketplace's single-plugin
+layout. Run `omarchy-shell shell rescanPlugins` before
+`omarchy plugin enable yewho.voice-note`.
 
 ## Validate and inspect
 
