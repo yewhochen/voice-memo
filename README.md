@@ -27,8 +27,6 @@ Both provide visible-only live microphone metering, Start/elapsed stop button, a
 
 Omarchy currently additionally has 120ms hover transitions, friendly PipeWire device nicknames, muted-red full-scale peak indication, and a header folder button. KDE's folder button remains at the bottom right; these later UI changes are not yet ported to KDE.
 
-`Something Else?` is an intentionally disabled placeholder shown only after successful saving.
-
 ## Dependencies and tests
 
 KDE: system Python 3.10+, PyQt6, `parec`, `pactl`, `ffmpeg`, `ffprobe`, `gdbus`; `gio` is an optional trash fallback. On Debian/Ubuntu the relevant packages include `python3-pyqt6`, `pulseaudio-utils`, `ffmpeg`, `libglib2.0-bin`.

@@ -70,15 +70,15 @@ test('qml declares native anchored panel and required states', () => {
   const bar = fs.readFileSync(path.join(__dirname, '..', 'BarWidget.qml'), 'utf8');
   const panel = fs.readFileSync(path.join(__dirname, '..', 'Panel.qml'), 'utf8');
   assert.match(bar, /BarWidget\s*\{/); assert.match(panel, /KeyboardPanel\s*\{/);
-  assert.match(panel, /PwNodePeakMonitor/); assert.match(panel, /visible: root\.hasSaved/);
-  assert.match(panel, /Something Else\?/); assert.match(panel, /enabled: false/);
+  assert.match(panel, /PwNodePeakMonitor/);
   assert.match(bar, /function toggleRecording/); assert.match(panel, /persistSettings/);
 });
 
-test('Something Else is only visible after a successful recording, never while busy', () => {
-  assert.equal(sandbox.showOther('', false), false);
-  assert.equal(sandbox.showOther('/saved.wav', false), true);
-  assert.equal(sandbox.showOther('/saved.wav', true), false);
+test('removed placeholder has no UI, model helper or IPC state', () => {
+  for (const file of ['Panel.qml', 'BarWidget.qml', 'Model.js']) {
+    const text = fs.readFileSync(path.join(__dirname, '..', file), 'utf8');
+    assert.doesNotMatch(text, /Something Else|showOther|hasSaved|otherVisible/);
+  }
 });
 test('Setting is an outlined option below recording and no header gear remains', () => {
   const panel = fs.readFileSync(path.join(__dirname, '..', 'Panel.qml'), 'utf8');
@@ -86,7 +86,6 @@ test('Setting is an outlined option below recording and no header gear remains',
   assert.equal(panel.includes('text: "⚙"'), false);
   assert.match(panel, /component OutlinedButton/);
   assert.match(panel, /border.width: 1/);
-  assert.match(panel, /Model.showOther/);
 });
 
 test('history copies files to clipboard on click and has no drag', () => {

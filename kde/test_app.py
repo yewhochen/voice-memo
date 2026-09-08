@@ -81,18 +81,18 @@ class RecorderUpgradeTests(unittest.TestCase):
         self.assertIn('border:', win.record.styleSheet())
         win.close()
 
-    def test_other_only_appears_after_saved_recording(self):
+    def test_removed_placeholder_absent_before_and_after_save(self):
         with tempfile.TemporaryDirectory() as folder:
             settings = QSettings(str(pathlib.Path(folder) / 'settings.ini'), QSettings.Format.IniFormat)
             win = recorder.Window(output_dir=pathlib.Path(folder), settings=settings, notifier=lambda *args: 1)
-            self.assertTrue(win.other.isHidden(), 'Placeholder must not show on launch')
+            self.assertFalse(hasattr(win, 'other'))
             install_synthetic_completed_capture(win, synthetic_pcm())
             win.stop_recording()
             self.assertTrue(wait_until(lambda: win.state == 'idle'))
-            self.assertFalse(win.other.isHidden(), 'Placeholder must show after save')
+            self.assertFalse(hasattr(win, 'other'))
             win.device = ''  # Avoid opening a microphone in this UI regression test.
             win.start_recording()
-            self.assertTrue(win.other.isHidden(), 'Next recording attempt hides placeholder')
+            self.assertFalse(hasattr(win, 'other'))
             win.close()
 
     def test_synthetic_pcm_drives_real_level_meter(self):
@@ -149,7 +149,7 @@ class RecorderUpgradeTests(unittest.TestCase):
             self.assertEqual(len(notices), 1)
             self.assertIn('录制完成', notices[0][0])
             self.assertIn(str(files[0]), notices[0][1])
-            self.assertFalse(win.other.isEnabled())
+            self.assertFalse(hasattr(win, 'other'))
             win.close()
 
     def test_old_stop_timeout_cannot_kill_next_capture(self):
@@ -229,7 +229,7 @@ class RecorderUpgradeTests(unittest.TestCase):
             self.assertTrue(wait_until(lambda: win.state == 'idle'))
             self.assertEqual(len(list(pathlib.Path(folder).glob('*.wav'))), 1)
             self.assertEqual(win.clock.text(), '00:00')
-            self.assertTrue(win.other.isHidden())
+            self.assertFalse(hasattr(win, 'other'))
             self.assertFalse(win.settings_open)
             self.assertFalse(win.history_open)
             self.assertEqual(win.meter.level, 0)

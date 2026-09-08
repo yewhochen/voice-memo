@@ -61,7 +61,6 @@ Panel {
   property var sourceRows: []
   property string currentOutput: ""
   readonly property string recordingFolder: Quickshell.env("HOME") + "/Music/Voice Notes"
-  readonly property bool hasSaved: Model.showOther(savedPath, busy)
   readonly property string selectedFormat: Model.normalizeFormat(setting("format", "wav"))
   readonly property string selectedSource: String(setting("source", ""))
   readonly property var nodes: Pipewire.nodes ? Pipewire.nodes.values : []
@@ -492,12 +491,6 @@ Panel {
         }
         }
 
-        OutlinedButton {
-          visible: root.hasSaved
-          enabled: false
-          width: parent.width
-          text: "Something Else?"
-        }
         Text {
           textFormat: Text.PlainText
           visible: root.errorText !== ""

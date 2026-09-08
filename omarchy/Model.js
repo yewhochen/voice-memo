@@ -9,8 +9,6 @@ function elapsedLabel(ms) {
   return (h ? pad(h) + ":" : "") + pad(Math.floor(s / 60) % 60) + ":" + pad(s % 60)
 }
 
-function showOther(savedPath, busy) { return String(savedPath || "") !== "" && !busy }
-
 function normalizeFormat(value) {
   var format = String(value || "").toLowerCase()
   return ["wav", "flac", "mp3"].indexOf(format) >= 0 ? format : "wav"

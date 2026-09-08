@@ -243,12 +243,6 @@ class Window(QWidget):
         self.history_layout = QVBoxLayout(self.history_panel); self.history_layout.setContentsMargins(0, 0, 0, 0)
         self.history_rows = []
         layout.addWidget(self.history_panel); self.history_panel.hide()
-        self.other = QPushButton('Something Else?')
-        self.other.setEnabled(False)
-        self.other.setStyleSheet(BUTTON_STYLE)
-        self.other.setToolTip('先留一个位置，暂时没有功能')
-        layout.addWidget(self.other)
-        self.other.hide()
         self.status = QLabel()
         self.status.setWordWrap(True)
         layout.addWidget(self.status)
@@ -383,7 +377,7 @@ class Window(QWidget):
                 success = False
         if success:
             if hasattr(self, 'destination') and Path(path).resolve() == self.destination.resolve():
-                self.other.hide(); self.status.clear()
+                self.status.clear()
             self.refresh_history()
         else: self.status.setText('无法将录音移到回收站；文件未删除。')
         return success
@@ -423,7 +417,6 @@ class Window(QWidget):
             return
         self.write_error = None
         self.stop_preview(restart=False)
-        self.other.hide()
         if not self.device:
             self.status.setText('没有找到可用的麦克风，请在设置中检查输入设备。')
             return
@@ -575,7 +568,6 @@ class Window(QWidget):
             self.retain_error('无法启动 ffmpeg，原始 WAV 临时录音仍保留。')
 
     def save_succeeded(self):
-        self.other.show()
         destination = self.destination
         self.temp.unlink(missing_ok=True)
         self.temp = None
@@ -678,7 +670,7 @@ class Window(QWidget):
             return
         self.session_exit_pending = False
         self.timer.stop(); self.clock.setText('00:00'); self.meter.reset()
-        self.other.hide(); self.status.clear()
+        self.status.clear()
         self.settings_open = self.history_open = False
         self.history_panel.hide()
         self.record.setText('Start'); self.record.setAccessibleName('Start recording')

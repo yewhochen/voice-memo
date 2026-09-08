@@ -50,7 +50,7 @@ BarWidget {
     function open(): void { root.open() }
     function status(): string {
       var p = panelLoader.item
-      return JSON.stringify(p ? {opened:p.opened, recording:p.recording, preparing:p.preparing, finalizing:p.finalizing, level:p.liveLevel, savedPath:p.savedPath, error:p.errorText, format:p.selectedFormat, source:p.selectedSource, otherVisible:p.hasSaved, elapsedMs:p.elapsedMs, buttonText:p.recordButtonText, historyVisible:p.historyOpen, historyCount:p.historyRows.length, historyPaths:p.historyRows.map(function(row) { return row.path }), copiedUri:p.copiedUri} : {error:"panel not loaded"})
+      return JSON.stringify(p ? {opened:p.opened, recording:p.recording, preparing:p.preparing, finalizing:p.finalizing, level:p.liveLevel, savedPath:p.savedPath, error:p.errorText, format:p.selectedFormat, source:p.selectedSource, elapsedMs:p.elapsedMs, buttonText:p.recordButtonText, historyVisible:p.historyOpen, historyCount:p.historyRows.length, historyPaths:p.historyRows.map(function(row) { return row.path }), copiedUri:p.copiedUri} : {error:"panel not loaded"})
     }
     function showHistory(): void { if (panelLoader.item) panelLoader.item.showHistory() }
     function openFolder(): void { if (panelLoader.item) panelLoader.item.openFolder() }
