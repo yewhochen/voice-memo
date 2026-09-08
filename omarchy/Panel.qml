@@ -354,7 +354,7 @@ Panel {
             text: root.recording ? "󰑋" : "󰍬"
             color: root.recording ? Color.accent : root.bar.foreground
             font.family: root.bar.fontFamily
-            font.pixelSize: Style.font.display
+            font.pixelSize: Style.font.display * 1.25
           }
           Column {
             width: parent.width - headerMic.implicitWidth - folderButton.width - parent.spacing * 2
