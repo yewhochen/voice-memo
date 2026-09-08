@@ -6,6 +6,24 @@ const path = require('node:path');
 const source = fs.readFileSync(path.join(__dirname, '..', 'Model.js'), 'utf8');
 const sandbox = {}; vm.createContext(sandbox); vm.runInContext(source, sandbox);
 
+test('bar glyph gets a local optical boost without changing native slots', () => {
+  const bar = fs.readFileSync(path.join(__dirname, '..', 'BarWidget.qml'), 'utf8');
+  assert.ok(bar.includes('fontSize: Style.bar.iconFont * 1.2'));
+  assert.doesNotMatch(bar, /\b(slotSize|opticalSize|scale)\s*:/);
+  assert.equal(bar.includes('openPanelIndicatorWidth'), false, 'Use the native centered indicator extent');
+});
+
+test('idle icon uses the preferred microphone glyph', () => {
+  const bar = fs.readFileSync(path.join(__dirname, '..', 'BarWidget.qml'), 'utf8');
+  assert.ok(bar.includes('text: root.recording ? "󰑋" : "󰍬"'));
+});
+
+test('settings names the device selector Input', () => {
+  const panel = fs.readFileSync(path.join(__dirname, '..', 'Panel.qml'), 'utf8');
+  assert.ok(panel.includes('text: "Input"'));
+  assert.equal(panel.includes('text: "Microphone"'), false);
+});
+
 test('meter runs whenever panel is open, not just while recording', () => {
   const panel = fs.readFileSync(path.join(__dirname, '..', 'Panel.qml'), 'utf8');
   assert.match(panel, /enabled: root.opened && !!root.selectedNode/);

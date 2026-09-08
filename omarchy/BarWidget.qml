@@ -11,7 +11,6 @@ BarWidget {
   readonly property bool opened: panelLoader.item ? panelLoader.item.opened === true : false
   readonly property bool recording: panelLoader.item ? panelLoader.item.recording === true : false
   readonly property bool popoutSwitchClosing: panelLoader.item ? panelLoader.item.popoutSwitchClosing === true : false
-  readonly property real openPanelIndicatorWidth: button.width
 
   function injectPanel() {
     var target = panelLoader.item
@@ -63,6 +62,8 @@ BarWidget {
     anchors.fill: parent
     bar: root.bar
     text: root.recording ? "󰑋" : "󰍬"
+    // Optical compensation for the narrow glyph; keep native slot geometry.
+    fontSize: Style.bar.iconFont * 1.2
     tooltipText: root.recording ? "Stop and save voice note" : "Record voice note"
     foreground: root.recording ? Color.accent : root.bar.foreground
     onPressed: function(mouseButton) {

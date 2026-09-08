@@ -467,7 +467,7 @@ Panel {
         PanelSeparator { foreground: root.bar.foreground }
         PanelSectionHeader { text: "SETTINGS"; foreground: root.bar.foreground; fontFamily: root.bar.fontFamily }
 
-        Text { textFormat: Text.PlainText; text: "Microphone"; color: root.bar.foreground; font.family: root.bar.fontFamily; font.pixelSize: Style.font.caption }
+        Text { textFormat: Text.PlainText; text: "Input"; color: root.bar.foreground; font.family: root.bar.fontFamily; font.pixelSize: Style.font.caption }
         PanelDropdown {
           width: parent.width
           foreground: root.bar.foreground
